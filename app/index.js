@@ -1,61 +1,33 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import PropTypes from 'prop-types';
 
-class App extends React.Component {
+class Timer extends React.Component {
   constructor(props) {
     super(props);
+
+    this.tick = this.tick.bind(this);
+
     this.state = {
-      first: 'first',
-    };
+      secondsElapsed: 0,
+    }
+  }
+  tick() {
+    this.setState({ secondsElapsed: this.state.secondsElapsed + 1 });
+  }
+  // componentDidMount 為 component 生命週期中 已插入節點的階段, 通常一些非同步操作都會放置這裡
+  componentDidMount() {
+    this.interval = setInterval(this.tick, 1000);
+  }
+  // componentWillMount 為 component 生命週期中 即將移出插入的節點階段
+  componentWillMount() {
+    clearInterval(this.interval);
   }
   render() {
     return (
-      <div>
-        <h1>Hello, World! {this.props.name}</h1>
-        <h1>Hello, World! {this.state.first}</h1>
-      </div>
+      <div>Seconds Elapsed: {this.state.secondsElapsed}</div>
     );
   }
 }
 
-App.propTypes = {
-  todo: Object,
-  name: String,
-};
-
-
-ReactDOM.render(<App name="55123" />, document.querySelector('#app'));
-
-
-// class MyComponent extends React.Component {
-//   render() {
-//     return (
-//       <div>hello, my component</div>
-//     );
-//   }
-// }
-
-const MyComponent = (props) => {
-  const divStyle = {
-    color: 'red',
-    // backgroundImage: 'url(' + imgUrl + ')',
-  };
-
-  return <div style={divStyle}>hello, my component {props.name}</div>
-};
-
-ReactDOM.render(<MyComponent name="5512345" />, document.querySelector('#MyComponent'));
-
-class HelloMessage extends React.Component {
-  render() {
-    return (
-      <ul>
-        {lists.map((result, index) => {
-          return (<li key={index}>{index}  {result}</li>);
-        })}
-      </ul>
-    );
-  }
-}
-
-ReactDOM.render(<HelloMessage />, document.querySelector('#HelloMessage'));
+ReactDOM.render(<Timer />, document.querySelector('#app'));
