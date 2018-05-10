@@ -2,32 +2,50 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
 
-class Timer extends React.Component {
+const TodoList = (props) => (
+  <ul>
+    {
+      props.items.map((item) => (
+        <li key={item.id}>{item.text}</li>
+      ))
+    }
+  </ul>
+)
+
+class TodoApp extends React.Component {
   constructor(props) {
     super(props);
-
-    this.tick = this.tick.bind(this);
-
+    this.onChange = this.onChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      secondsElapsed: 0,
-    }
+      items: [],
+      text: '',
+    };
   }
-  tick() {
-    this.setState({ secondsElapsed: this.state.secondsElapsed + 1 });
+  onChange(e) {
+    this.setState({ text: e.target.value });
   }
-  // componentDidMount 為 component 生命週期中 已插入節點的階段, 通常一些非同步操作都會放置這裡
-  componentDidMount() {
-    this.interval = setInterval(this.tick, 1000);
-  }
-  // componentWillMount 為 component 生命週期中 即將移出插入的節點階段
-  componentWillMount() {
-    clearInterval(this.interval);
+  handleSubmit(e) {
+    e.preventDefault();
+    const nextItems = this.state.items.concat([{ 
+      text: this.state.text,
+      id: Date.now(),
+    }]);
+    const nextText = '';
+    this.setState({ items: nextItems, text: nextText });
   }
   render() {
     return (
-      <div>Seconds Elapsed: {this.state.secondsElapsed}</div>
+      <div>
+        <h3>TODO</h3>
+        <TodoList items={this.state.items}></TodoList>
+        <form onSubmit={this.handleSubmit}>
+          <input onChange={this.onChange} value={this.state.text} />
+          <button>{'Add #' + (this.state.items.length + 1)}</button>
+        </form>
+      </div>
     );
   }
 }
 
-ReactDOM.render(<Timer />, document.querySelector('#app'));
+ReactDOM.render(<TodoApp />, document.querySelector('#app'));
