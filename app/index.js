@@ -1,51 +1,49 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import PropTypes from 'prop-types';
+import axios from 'axios';
 
-const TodoList = (props) => (
-  <ul>
-    {
-      props.items.map((item) => (
-        <li key={item.id}>{item.text}</li>
-      ))
-    }
-  </ul>
-)
-
-class TodoApp extends React.Component {
+class UserGithub extends React.Component {
   constructor(props) {
     super(props);
-    this.onChange = this.onChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
     this.state = {
-      items: [],
-      text: '',
-    };
+      username: '',
+      githubUrl: '',
+      avatarUrl: '',
+    }
   }
-  onChange(e) {
-    this.setState({ text: e.target.value });
-  }
-  handleSubmit(e) {
-    e.preventDefault();
-    const nextItems = this.state.items.concat([{ 
-      text: this.state.text,
-      id: Date.now(),
-    }]);
-    const nextText = '';
-    this.setState({ items: nextItems, text: nextText });
+  componentDidMount() {
+    axios.get(this.props.source, {
+      params: {
+        // ID: 12345
+      }
+    })
+      .then((response) => {
+        console.log(response);
+        const data = response.data;
+        this.setState({
+          username: data.name,
+          githubUrl: data.html_url,
+          avatarUrl: data.avatar_url,
+        });
+      })
+      .catch((error) => {
+        console.log(error);
+      });
   }
   render() {
     return (
       <div>
-        <h3>TODO</h3>
-        <TodoList items={this.state.items}></TodoList>
-        <form onSubmit={this.handleSubmit}>
-          <input onChange={this.onChange} value={this.state.text} />
-          <button>{'Add #' + (this.state.items.length + 1)}</button>
-        </form>
+        <h3>{this.state.username}</h3>
+        <img src={this.state.avatarUrl} />
+        <br />
+        <a href={this.state.githubUrl}>Github Link</a>
       </div>
     );
   }
 }
 
-ReactDOM.render(<TodoApp />, document.querySelector('#app'));
+ReactDOM.render(
+  <UserGithub source="https://api.github.com/users/littlehorseboy" />,
+    document.querySelector('#app')
+);
