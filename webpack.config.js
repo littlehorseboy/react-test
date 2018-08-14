@@ -18,7 +18,8 @@ module.exports = {
     filename: 'index_bundle.js',
   },
   module: {
-    /* 在這邊是使用 babel-loader 將所有 .js 相關檔案轉譯成瀏覽器可以閱讀的 JavaScript。
+    /* 
+      在這邊是使用 babel-loader 將所有 .js 相關檔案轉譯成瀏覽器可以閱讀的 JavaScript。
       排除了 npm 安裝的套件位置 node_modules
       preset 則是使用的 babel 轉譯規則，這邊使用 react、es2015。
       若是已經單獨使用 .babelrc 作為 presets 設定的話，則可以省略 query
